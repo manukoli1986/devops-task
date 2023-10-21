@@ -18,7 +18,7 @@ spec:
         app: myfirstapp
     spec:
       containers:
-      - image: runapp:latest
+      - image: runapp:v1
         name: runapp
         imagePullPolicy: Never
         resources: {}

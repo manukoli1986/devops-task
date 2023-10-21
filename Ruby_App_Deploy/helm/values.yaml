@@ -9,7 +9,7 @@ image:
   repository: runapp
   pullPolicy: Never
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "latest"
+  tag: "v1"
 
 imagePullSecrets: []
 nameOverride: ""
