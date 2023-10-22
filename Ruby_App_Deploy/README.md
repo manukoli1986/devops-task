@@ -1,7 +1,14 @@
+# Module 2
+
 * Ruby App On Local K8
 
-
-
+|                               **Requirement**                           |                **Solution**             |
+|:----------------------------------------------------------------------:	|:--------------------------------------:	|
+| Highly available and load balancer                                     	| Using Replicas                         	|
+| Ensuring the application is started before served with traffic         	| Using Livenessprobe and Readinessprobe 	|
+| Safeguards for ensuring healthy lifecycle of applications              	| Using HealthCheck                      	|
+| Ensure zero downtime                                                   	| Deployment Strategy                    	|
+| Endpoints of the web application are accessible outside the cluster    	| Using Ingress                          	|
 
 Steps:
 
@@ -54,24 +61,15 @@ curl --http0.9  http://localhost:8080/
 3. Create/Generate Helm chart for the app. I am using Helm 3 (Latest version)
 
 ```
-helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-helm repo update
-helm dependency update
 helm create myfirstapp
 ```
 
-4. Adjust the setting in values.yaml, and manifest files under template directory.
-
-|                               **Requirement**                           |                **Solution**             |
-|:----------------------------------------------------------------------:	|:--------------------------------------:	|
-| Highly available and load balancer                                     	| Using Replicas                         	|
-| Ensuring the application is started before served with traffic         	| Using Livenessprobe and Readinessprobe 	|
-| Safeguards for ensuring healthy lifecycle of applications              	| Using HealthCheck                      	|
-| Ensure zero downtime                                                   	| Deployment Strategy                    	|
-| Endpoints of the web application are accessible outside the cluster    	| Using Ingress                          	|
-
-e.g. https://www.tablesgenerator.com/markdown_tables#
-
+4. Adding ingress-nginx controller as dependency as we are running individual application on cluster and If we run the same code on Cloud (With Pre-DNS setup) then It will be accessibe on domain name. 
+```
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo update
+helm dependency update
+```
 
 5. Deploy App on local K8
 
@@ -79,12 +77,10 @@ e.g. https://www.tablesgenerator.com/markdown_tables#
 helm upgrade --install myfirstapp ./helm  
 ```
 
-
-
 6. Verify the application is running as expected on local k8 cluster. I am using Port-forward method from Rancher Desktop UI to verify it. 
 
 Enabling Port-Forward 
-![Screenshot](./img/port-forward.png.png)
+![Screenshot](./img/port-forward.png)
 
 ```
 devops-task/Ruby_App_Deploy/helm on  main [!?] is 📦 v0.1.0 via ⎈ v3.12.3 on ☁️ 
@@ -95,9 +91,10 @@ devops-task/Ruby_App_Deploy/helm on  main [!?] is 📦 v0.1.0 via ⎈ v3.12.3
 OK%   
 ```
 
+7. Zero Downtime Stratretgy 
 
 
-# Problem:
+## Problem:
 
 1. Getting below error when running the old ruby code on local k8. and dockerize it. When running on K8 cluster and using livenessprobe it is failing we tried to use httpget and tcpsocket but problem was same as it is using old http protocol.  
 
