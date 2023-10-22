@@ -1,20 +1,26 @@
 require 'socket'
 
-server  = TCPServer.new('0.0.0.0', 80)
+server = TCPServer.new(80)
 
-loop {
-  client  = server.accept
-  request = client.readpartial(2048)
-  
-  method, path, version = request.lines[0].split
+loop do
+  client = server.accept
 
-  puts "#{method} #{path} #{version}"
-
-  if path == "/healthcheck"
-    client.write("OK")
-  else
-    client.write("Well, hello there!")
+  begin
+    request = client.readpartial(2048)
+  rescue EOFError
+    # Client closed the connection, so we can't read more data.
+    client.close
+    next
   end
 
+  method, path, version = request.lines[0].split
+
+  if path == "/healthcheck"
+    response = "HTTP/1.1 200 OK\r\nContent-Length: 2\r\n\r\nOK"
+  else
+    response = "HTTP/1.1 200 OK\r\nContent-Length: 17\r\n\r\nWell, hello there!"
+  end
+
+  client.write(response)
   client.close
-}
+end
