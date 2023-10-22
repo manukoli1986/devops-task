@@ -1,3 +1,4 @@
+{{- if .Values.blue.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -11,6 +12,11 @@ spec:
   selector:
     matchLabels:
       {{- include "runapp.selectorLabels" . | nindent 6 }}
+  strategy:
+    rollingUpdate:
+      maxSurge: {{ .Values.strategy.rollingUpdate.maxSurge }}
+      maxUnavailable: {{ .Values.strategy.rollingUpdate.maxUnavailable }}
+    type: RollingUpdate
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -65,3 +71,4 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+{{- end -}}

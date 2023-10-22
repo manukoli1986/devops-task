@@ -1,15 +1,12 @@
-# Default values for runapp.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
 
-replicaCount: 1
+replicaCount: 4
 
 image:
-  # repository: custom-nginx
+  # repository: nginx
   repository: runapp
   pullPolicy: Never
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "v1"
+  tag: "v2"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -54,6 +51,8 @@ ingress:
       paths:
         - path: /
           pathType: ImplementationSpecific
+
+
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
@@ -70,6 +69,12 @@ resources: {}
   # requests:
   #   cpu: 100m
   #   memory: 128Mi
+
+
+strategy:
+  rollingUpdate:
+    maxSurge: 50%
+    maxUnavailable: 50%
 
 autoscaling:
   enabled: false

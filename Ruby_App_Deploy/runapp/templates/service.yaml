@@ -1,3 +1,4 @@
+{{- if .Values.blue.enabled }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -13,3 +14,4 @@ spec:
       name: http
   selector:
     {{- include "runapp.selectorLabels" . | nindent 4 }}
+{{- end -}}
