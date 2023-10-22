@@ -1,6 +1,6 @@
 # Module 2
 
-* Ruby App On Local K8
+## Ruby App On Local K8
 
 |                               **Requirement**                           |                **Solution**             |
 |:----------------------------------------------------------------------:	|:--------------------------------------:	|
@@ -10,15 +10,15 @@
 | Ensure zero downtime                                                   	| Deployment Strategy                    	|
 | Endpoints of the web application are accessible outside the cluster    	| Using Ingress                          	|
 
-Steps:
+### Steps:
 
-1. Clone the Ruby Code from GitHub
+1. **Clone the Ruby Code from GitHub**
 
 ```
 git clone https://github.com/manukoli1986/devops-task.git
 ```
 
-2. Build a Docker Container Image. I am using below format to dockerize the ruby code. 
+2. **Build a Docker Container Image. I am using below format to dockerize the ruby code.**
 
 ```
 $ cd devops-task/Ruby_App_Deploy/Docker
@@ -58,26 +58,26 @@ curl --http0.9  http://localhost:8080/
 
 ```
 
-3. Create/Generate Helm chart for the app. I am using Helm 3 (Latest version)
+3. **Create/Generate Helm chart for the app. I am using Helm 3 (Latest version)**
 
 ```
 helm create myfirstapp
 ```
 
-4. Adding ingress-nginx controller as dependency as we are running individual application on cluster and If we run the same code on Cloud (With Pre-DNS setup) then It will be accessibe on domain name. 
+4. **Adding ingress-nginx controller as dependency as we are running individual application on cluster and If we run the same code on Cloud (With Pre-DNS setup) then It will be accessibe on domain name.**
 ```
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 helm repo update
 helm dependency update
 ```
 
-5. Deploy App on local K8
+5. **Deploy App on local K8**
 
 ```
 helm upgrade --install myfirstapp ./helm  
 ```
 
-6. Verify the application is running as expected on local k8 cluster. I am using Port-forward method from Rancher Desktop UI to verify it. 
+6. **Verify the application is running as expected on local k8 cluster. I am using Port-forward method from Rancher Desktop UI to verify it.**
 
 Enabling Port-Forward 
 ![Screenshot](img/port-forward.png)
@@ -91,7 +91,7 @@ devops-task/Ruby_App_Deploy/helm on  main [!?] is 📦 v0.1.0 via ⎈ v3.12.3
 OK%   
 ```
 
-7. Zero Downtime Stratretgy 
+7. **Zero Downtime Stratretgy**
 
 
 ## Problem:
