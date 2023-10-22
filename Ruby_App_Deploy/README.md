@@ -80,7 +80,7 @@ helm upgrade --install myfirstapp ./helm
 6. Verify the application is running as expected on local k8 cluster. I am using Port-forward method from Rancher Desktop UI to verify it. 
 
 Enabling Port-Forward 
-![Screenshot](./img/port-forward.png)
+![Screenshot](img/port-forward.png)
 
 ```
 devops-task/Ruby_App_Deploy/helm on  main [!?] is 📦 v0.1.0 via ⎈ v3.12.3 on ☁️ 

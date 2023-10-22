@@ -9,7 +9,7 @@ Design a pipeline that fits the needs of such an infrastructure for our app.
 
 
 
-* Module 2 - Deploy
+* [Module 2](https://github.com/manukoli1986/devops-task/tree/main/Ruby_App_Deploy#module-2)  - Deploy
 Run the app on local k8s cluster.
 Part 1 - Containerise
 Build a secure, scalable and robust container image.
@@ -22,7 +22,7 @@ Should satisfy following:
 ● Ensure zero downtime
 ● Endpoints of the web application are accessible outside the cluster
 
-* Module 3 - Improvements
+* [Module 3](https://github.com/manukoli1986/devops-task/tree/main/Ruby_App_Deploy#module-3) - Improvements
 This is an open-ended assignment, you are free to introduce changes, in the
 assigned time frame, to the application or in the instrumentation to meet your
 standards in terms of security, availability, reliability and observability.
