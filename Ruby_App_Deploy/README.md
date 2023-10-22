@@ -181,32 +181,34 @@
   According to the best practice for K8 Cluster wheather in the cloud or on-prem, it is really crucial for ensuring the reliability, scalability, and security of the applications provisioned on K8 cluster. Here are some key best practices which I would recommend:
 
 
-  - Affinity/Antiaffinity/NodeSelector
+  - Affinity/Antiaffinity/NodeSelector -> 
   For worker nodes, this is mandatory practice to deploy the pod with affinity, antiaffinity or nodeselector config setting. We can use above choice which meet our requirements. Even if we configured several replicas, they should not belong to the same node — the server hosting pods. Because if the node is down and your pods replicas are on this server, then your application will be down too(link). So you have to configure podAntiAffinity most of the time.
 
-  - Resource Quotas and Limits
+  - Resource Quotas and Limits -> 
   We should enforce quotas to prevent resource exhaustion and set the resource limit on pods to control usage. 
   
   - CPU & Memory requests
   CPU & memory allocation are compute resources assignment to the pod. When we do not configure CPU or memory requests, Then it will start consuming all memory and CPU as per the need and there would be no hold on to that. And if we deploy new application on same cluster we might get issue of memory or CPUs. i.e. insufficient resources allocation or out-of-memory issues. I would recommend setting up the CPU and memory requests to the lowest possible value
 
-  - HPA - Horizontal Pod Autoscaler
+  - HPA - Horizontal Pod Autoscaler -> 
   In some circumstances, our fixed replicas setting cannot handle a large amount of requests on our cluster. This may lead to issues even if all pods are correctly working. One of the great features of Kubernetes is to benefit from the HPA. HPA is the way to do autoscaling with Kubernetes.
   Setting a basic HPA based on CPU real usage is advised to handle the traffic correctly and adapt the costs too.
 
-  - Monitoring & Logging
+  - Monitoring & Logging -> 
   I have used Prometheus and Grafana and ELK, to monitor the metrics of application to track the APIs request and also use log management i.e. elk or datadog or splunk to track the logs produced by application running on container. 
 
-  - Multi-AZ or Multi-Region Deployment:
+  - Multi-AZ or Multi-Region Deployment -> 
   We should distribute our cluster across multiple Availability Zones (AZs) or regions for high availability. Or we ca use the Google Anthos which works as Federation and can connect multiple cluster from diffferent cloud providers. This will make our application more High Available and more Fault Tolerant. 
 
   - Security 
-    - Network Policy
-      Network policy prevents the communication between pods and namespaces in k8 cluster. We can create multiple network policy. It works as firewall in cluster. 
-    - RBAC
-      Implement RBAC to restrict access to resources and API operations and we can define roles and role bindings that grant minimal necessary privileges.
-    - PSP - Pod Security Policy
-      We can use it to define and enforce the policies for pods i.e. Control pod capabilities, run as non-root, and other security-related settings
-    - Image Security
-      We can use trivy to scan the docker or application images before deploy to check the vulnerabilities. 
+
+
+  - Network Policy -> 
+    Network policy prevents the communication between pods and namespaces in k8 cluster. We can create multiple network policy. It works as firewall in cluster. 
+  - RBAC -> 
+    Implement RBAC to restrict access to resources and API operations and we can define roles and role bindings that grant minimal necessary privileges.
+  - PSP - Pod Security Policy -> 
+    We can use it to define and enforce the policies for pods i.e. Control pod capabilities, run as non-root, and other security-related settings
+  - Image Security -> 
+    We can use trivy to scan the docker or application images before deploy to check the vulnerabilities. 
       
