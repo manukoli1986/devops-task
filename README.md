@@ -15,12 +15,13 @@ Part 1 - Containerise
 Build a secure, scalable and robust container image.
 Part 2 - Manifests
 Write helm manifests to deploy the application to local kubernetes cluster.
+
 Should satisfy following:
-● Highly available and load balanced
-● Ensuring the application is started before served with traffic
-● Safeguards for ensuring healthy life cycle of applications
-● Ensure zero downtime
-● Endpoints of the web application are accessible outside the cluster
+- Highly available and load balanced
+- Ensuring the application is started before served with traffic
+- Safeguards for ensuring healthy life cycle of applications
+- Ensure zero downtime
+- Endpoints of the web application are accessible outside the cluster
 
 * [Module 3](https://github.com/manukoli1986/devops-task/tree/main/Ruby_App_Deploy#module-3) - Improvements
 This is an open-ended assignment, you are free to introduce changes, in the
