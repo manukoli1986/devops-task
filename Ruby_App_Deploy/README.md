@@ -42,7 +42,7 @@
   Build the Docker image with the following command:
 
   ```
-  docker build -t rubyapp:latest . 
+  docker build -t runapp:v1 . 
   docker http://localhost:8080/healthcheck
    
   For Old Code
@@ -50,13 +50,21 @@
   curl --http0.9  http://localhost:8080/
   ```
 
-3. **Create/Generate Helm chart for the app. I am using Helm 3 (Latest version)**
+3. **Assuming Helm chart is created and adding the below dependency for ingress-nginx to install with application**
 
   ```
-  helm create myfirstapp
+  cat Chart.yaml
+
+    dependencies:
+  - name: ingress-nginx
+    version: 4.8.2  # Use the desired version
+    repository: https://kubernetes.github.io/ingress-nginx
   ```
 
 4. **Adding ingress-nginx controller as dependency as we are running individual application on cluster and If we run the same code on Cloud (With Pre-DNS setup) then It will be accessibe on domain name.**
+
+
+
   ```
   helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
   helm repo update
@@ -187,7 +195,7 @@
   - Resource Quotas and Limits -> 
   We should enforce quotas to prevent resource exhaustion and set the resource limit on pods to control usage. 
   
-  - CPU & Memory requests
+  - CPU & Memory requests -> 
   CPU & memory allocation are compute resources assignment to the pod. When we do not configure CPU or memory requests, Then it will start consuming all memory and CPU as per the need and there would be no hold on to that. And if we deploy new application on same cluster we might get issue of memory or CPUs. i.e. insufficient resources allocation or out-of-memory issues. I would recommend setting up the CPU and memory requests to the lowest possible value
 
   - HPA - Horizontal Pod Autoscaler -> 

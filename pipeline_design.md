@@ -1,72 +1,88 @@
 * Module 1
 
 ### Scenerio 
-We have a homogenous mixture of environments based on cloud as well as
-on-premise Kubernetes clusters. Some of our applications run on multiple
-instances while others are standalone. The configuration of the auxiliary
-services (databases, caches etc) might be different depending on the
-environment.
+We have a homogenous mixture of environments based on cloud as well as on-premise Kubernetes clusters. Some of our applications run on multiple instances while others are standalone. The configuration of the auxiliary services (databases, caches etc) might be different depending on the environment.
+
 Design a pipeline that fits the needs of such an infrastructure for our app.
 (Github actions, helm ,argocd are preferred).
 
 
+### Design Architecture:
+
 
 Designing a pipeline for an infrastructure with a mixture of cloud and on-premise Kubernetes clusters, varying application instances, and different auxiliary service configurations is a complex task. Below are key points and a high-level design architecture for such a pipeline:
 
-### Points:
+Considering the GitOps best practices of separating your Application Source Code from the Application’s K8s Configuration in two Git(Hub) repositories, Here are the process to implement the CI/CD (Continuous Deployment/Delivery) with GitHub Actions (CI) and pull based deployment via Argo CD.
 
-1. **Modular CI/CD Pipeline**: Design a modular CI/CD pipeline that can handle various application types (multi-instance, standalone) and adapt to different environments.
+The workflow I am using which can be easily converted to Continuous Delivery by modifying the GitHub Actions. 
 
-2. **Git-Based Configuration**: Use Git as a central repository for storing application code, Kubernetes configurations, and Helm charts. Ensure that all configuration is version-controlled.
+Continuous Deployment is ideal for lower environments (i.e. Development) and can be triggered by a PR merge, push or even a simple commit to the application source code repository wheres Continous Delivery would require the manual approval to proceed with production cluster or env. 
 
-3. **GitHub Actions**: Utilize GitHub Actions for continuous integration. Set up workflows to build, test, and package applications whenever changes are pushed to the repository.
+## Pseudocode of Pipeline and ArgoCD
 
-4. **Docker Images**: Build Docker images for your applications and publish them to a container registry, making them accessible for both cloud and on-premise clusters.
+ ![Screenshot](Ruby_App_Deploy/img/GitOps_argoCd.drawio.svg) 
 
-5. **Helm Charts**: Create Helm charts for your applications and auxiliary services. Helm simplifies the deployment and management of applications in Kubernetes clusters.
 
-6. **ArgoCD**: Use ArgoCD for continuous delivery. ArgoCD helps in automating the deployment of applications and ensures they are in sync with the desired state defined in Git.
+1. Here User is check-in the code to repo1 or create PR and that will trigger the GITHUB ACTION WORKFLOW 1 by  the modification of event. **Assumption** The ECR creds to store container image is already in the CI pipeline (GITHUB ACTION WORKFLOW 1)
 
-7. **GitOps Approach**: Implement a GitOps approach, where the desired state of your applications and infrastructure is defined in Git repositories. ArgoCD continuously reconciles the clusters to match this desired state.
+2. The GITHUB ACTION WORKFLOW 1 will run steps mentioned in pipeline i.e. build, compile, and test your application and then package it in a Docker container and publish it to a container repository.
 
-8. **Multi-Environment Support**: Define Helm values files for different environments (cloud, on-premise) and application instances. This allows you to configure auxiliary services appropriately for each environment.
+3. The GITHUB ACTION WORKFLOW 1 passes the Docker image name and tag as input and triggers the  GITHUB ACTION WORKFLOW 2, which will update the helm chart's dev or prod wrapper manifest file and commit and push the changes to the Application/K8s Configuration repository. 
 
-9. **Secret Management**: Implement a secure method for managing secrets and sensitive configurations. Tools like HashiCorp Vault or Kubernetes Secrets can be integrated into your pipeline.
+4. Argo CD will be pulling this change and update the application on the K8s cluster.
 
-10. **Automated Testing**: Integrate automated testing into your pipeline. Include unit tests, integration tests, and end-to-end tests to ensure the reliability of your applications.
+5. We will be using "sync app" as manual for production and automatic for development.
 
-11. **Environment Isolation**: Clearly define environment boundaries in your pipeline. Use namespace separation in Kubernetes for isolating environments. Each environment should have its own namespace.
+6. The default rolling update will take place, and which we can see in the Argo CD UI that the new version being deployed first and then the containers running the old version being terminated after.
 
-12. **Rollback Mechanism**: Implement a rollback mechanism in case an update or deployment fails. ArgoCD can help with rollbacks to the previous state in a controlled manner.
 
-13. **Logging and Monitoring**: Set up logging and monitoring for all clusters and applications. Tools like Prometheus and Grafana can be used for this purpose.
+* CI/CD In Motion
+GITHUB ACTION WORKFLOW 1 acts as the CI flow, resides on the Application git repository, and is designed to trigger on code updates initiated by user; it will build the Docker container and push it to the ECR in this scenario. In addition, this flow will trigger Pipleine2 and pass the newly built image tag.
 
-14. **Documentation and Runbooks**: Maintain comprehensive documentation and runbooks for the pipeline, covering deployment procedures, environment-specific configurations, and troubleshooting steps.
+GITHUB ACTION WORKFLOW 2 is the CD flow, resides on the Helm Chart Configuration git repository, and is initiated at the end of GITHUB ACTION WORKFLOW 1 completion; it will take the latest built image tag form GITHUB ACTION WORKFLOW 1 and update the Helm's dev or prod wrapper manifest file with it, which in turn will wake up ArgoCD and redeploy the latest application.
 
-15. **Audit and Compliance**: Ensure compliance with security and audit requirements in your pipeline. Implement measures for auditing and tracking changes to the infrastructure.
 
-### Design Architecture:
+* How GITHUB ACTION WORKFLOW 1 will pass the container name or tag to GITHUB ACTION WORKFLOW 2.
+- we will be using the one simpl e logic in GITHUB ACTION WORKFLOW 1 i.e. yq or jq command to pick generated tag version from GITHUB ACTION WORKFLOW 1 step to replace the dev or prod wrapper manifest file's values in GITHUB ACTION WORKFLOW 2. 
 
-Here's a high-level design architecture for the proposed pipeline:
+* How the tag version will get update in k8 configuration repository. 
+- The logic behind is very simple. The GITHUB ACTION WORKFLOW 1 will run all steps and last step will send tag version as payload and trigger the GITHUB ACTION WORKFLOW 2 to start. Then next moment the GITHUB ACTION WORKFLOW 2 will initate and take the payload tag version and update in helm chart's dev or prod wrapper manifest file. 
 
-1. **GitHub Repository**: Use a centralized GitHub repository to store application code, Kubernetes configuration files, Helm charts, and deployment scripts.
 
-2. **GitHub Actions**: Set up GitHub Actions for continuous integration. This includes building Docker images, running tests, and creating Helm charts.
+#### Sample dev-values.yaml and prod-values.yaml
+======================================
+```
+Dev-Value.yaml
+  image:$Image (Pick from workflow 1 job)
+  cluster:
+    dev
+      Cloud
+  Auto-deploy - ON 
+  
 
-3. **Container Registry**: Push the Docker images to a container registry (e.g., Docker Hub, Amazon ECR, or a private registry) for accessibility by both cloud and on-premise clusters.
+Prod-Value.yaml
+  image:$Image (Pick from workflow 1 job)
+  cluster:
+    Prod
+      Onprem
+      Cloud
+  Auto-deploy - Off (Manual Approval required)
+```
+  
 
-4. **Helm Repository**: Store Helm charts in a Helm repository for easy distribution and sharing across environments.
+### Best Practice Implementation 
 
-5. **ArgoCD for Continuous Delivery**: Implement ArgoCD for continuous delivery. Configure ArgoCD applications to sync with Git repositories and apply desired states to Kubernetes clusters.
+**Rollback Mechanism** - Argo CD Rollbacks can be easily triggered from the UI or CLI, but the idea of GitOps is to rely on Git and revert your changes and let the CI/Argo CD do its magic. Argo CD deployment strategies aka Rollouts include blue-green and canary among others.
 
-6. **Environment-Specific Helm Values**: Maintain environment-specific Helm values files in your Git repository. These files configure auxiliary services based on the environment (cloud, on-premise) and specific application instances.
+**Logging and Monitoring** - Set up logging and monitoring for all clusters and applications. Tools like Prometheus and Grafana can be used for this purpose.
 
-7. **Kubernetes Clusters**: Maintain cloud and on-premise Kubernetes clusters. Each environment and application instance should run in its isolated namespace.
+**Security Consideration**
+We also can limit in GutHub who can commit to the repo (application and K8s config repos), who can review and merge pull requests, etc. 
 
-8. **Secret Management**: Integrate a secure secret management system (e.g., HashiCorp Vault) to manage sensitive configurations.
+**Secret Management**: Implement a secure method for managing secrets and sensitive configurations. Tools like HashiCorp Vault or Kubernetes Secrets can be integrated into your pipeline.
 
-9. **Logging and Monitoring Stack**: Set up a comprehensive logging and monitoring stack, such as Prometheus and Grafana, to monitor the health and performance of applications and clusters.
+**Documentation and Runbooks**: Maintain comprehensive documentation and runbooks for the pipeline, covering deployment procedures, environment-specific configurations, and troubleshooting steps.
 
-10. **Documentation and Runbooks**: Create detailed documentation and runbooks to guide developers and operations teams in using and troubleshooting the pipeline.
+**Audit and Compliance**: Ensure compliance with security and audit requirements in your pipeline. Implement measures for auditing and tracking changes to the infrastructure.
 
-By following this design and these points, you can create a versatile CI/CD pipeline that accommodates the complexity of your infrastructure with various environments, application types, and auxiliary service configurations. This pipeline enhances deployment reliability, simplifies management, and ensures consistency across your entire ecosystem.
+
