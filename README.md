@@ -1,4 +1,4 @@
-* Module 1 - Pipeline design
+* [Module 1](https://github.com/manukoli1986/devops-task/blob/main/pipeline_design.md) - Pipeline design
 We have a homogenous mixture of environments based on cloud as well as
 on-premise Kubernetes clusters. Some of our applications run on multiple
 instances while others are standalone. The configuration of the auxiliary
