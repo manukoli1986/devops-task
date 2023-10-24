@@ -1,8 +1,5 @@
 * Module 1
 
-### Scenerio 
-We have a homogenous mixture of environments based on cloud as well as on-premise Kubernetes clusters. Some of our applications run on multiple instances while others are standalone. The configuration of the auxiliary services (databases, caches etc) might be different depending on the environment. Design a pipeline that fits the needs of such an infrastructure for our app. (Github actions, helm ,argocd are preferred).
-
 ### Designing Architecture:
 Designing a pipeline for an infrastructure with a mixture of cloud and on-premise Kubernetes clusters, varying application instances, and different auxiliary service configurations is a complex task. Below are key points and a high-level design architecture for such a pipeline:
 

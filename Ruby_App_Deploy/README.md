@@ -181,10 +181,6 @@
 
 # Module 3
 
-  This is an open-ended assignment, you are free to introduce changes, in the assigned time frame, to the application or in the instrumentation to meet your standards in terms of security, availability, reliability and observability.
-
-  We made an overview on how to secure a deployment on Kubernetes to be resilient and performant. It relies on:
-  -----------------------------------------------------------------------------------------------------------------------------------------------------
 
   According to the best practice for K8 Cluster wheather in the cloud or on-prem, it is really crucial for ensuring the reliability, scalability, and security of the applications provisioned on K8 cluster. Here are some key best practices which I would recommend:
 
