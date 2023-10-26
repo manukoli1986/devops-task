@@ -1,0 +1,23 @@
+name: Repository Dispatch
+
+on:
+  repository_dispatch:
+    types: [new-image]
+
+permissions: write-all
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Update Image Version
+      id: imgupd
+      uses: mikefarah/yq@master
+      with: 
+        cmd: yq eval '.image.repository = "${{ github.event.client-payload.image }}"' -i myapp/dev-values.yaml
+      
+    - uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: Apply image name changes

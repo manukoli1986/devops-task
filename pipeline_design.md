@@ -35,7 +35,6 @@ Continuous Deployment is ideal for lower environments (i.e. Development) and can
 4. Both environment will have autoscalling feature enabled for Pod Level and Cluster level.
 
 
-
 **CI/CD In Motion**
 - GITHUB ACTION WORKFLOW 1 acts as the CI flow, resides on the Application git repository, and is designed to trigger on code updates initiated by user; it will build the Docker container and push it to the ECR in this scenario. In addition, this flow will trigger Pipleine2 and pass the newly built image tag.
 
@@ -89,3 +88,14 @@ We also can limit in GutHub who can commit to the repo (application and K8s conf
 **Audit and Compliance**: Ensure compliance with security and audit requirements in your pipeline. Implement measures for auditing and tracking changes to the infrastructure.
 
 
+
+### Problem - 
+
+1. Error
+
+INPUT_PUSH_OPTIONS: 
+remote: Permission to manukoli1986/gitops-2.git denied to github-actions[bot].
+fatal: unable to access 'https://github.com/manukoli1986/gitops-2/': The requested URL returned error: 403
+
+Solution:
+Check if "Read and write permissions" are enabled in Settings -> Actions -> General -> Workflow permissions:
