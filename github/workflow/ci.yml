@@ -1,3 +1,6 @@
+## This repository only for Source code of Application which will be updated and pushed developer. We named it "gitops-1"
+
+
 name: CI
 
 # events that trigger workflows

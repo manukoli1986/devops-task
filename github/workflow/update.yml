@@ -1,3 +1,7 @@
+## This repository only for Helm CHart which will be updated the docker images in value.yaml file which will take value from previous workflow and update the values.yaml file. We named it "gitops-2"
+## ArgoCD will be in sync with "gitops-2" to check if there is any new event update. 
+
+
 name: Repository Dispatch
 
 on:
@@ -16,7 +20,7 @@ jobs:
       id: imgupd
       uses: mikefarah/yq@master
       with: 
-        cmd: yq eval '.image.repository = "${{ github.event.client-payload.image }}"' -i myapp/dev-values.yaml
+        cmd: yq eval '.image.repository = "${{ github.event.client-payload.image }}"' -i myapp/values.yaml
       
     - uses: stefanzweifel/git-auto-commit-action@v4
       with:
